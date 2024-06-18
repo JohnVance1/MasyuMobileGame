@@ -7,47 +7,26 @@ using UnityEngine.Tilemaps;
 public class HexagonGrid : MonoBehaviour
 {
     public const int width = 6;  // Width should always be 1 more than the Height
-    public const int height = 5;
-    List<List<Node>> hexagons = new List<List<Node>>();
+    public const int height = 6;
 
-    public Tilemap tileMap;
-    public Tile defaultTile;
+    public Node nodePrefab;
 
-    public List<Vector3> availablePlaces;
-
+    private float nodeWidth;
+    private float nodeHeight;
      
 
     public void Start()
     {
-        if(tileMap == null)
-        {
-            Debug.LogWarning("No Tilemap is assigned to: " + gameObject.name);
-            return;
-        }
+        AdjacencyList = new List<Node>();
+        nodeWidth = nodePrefab.GetComponent<SpriteRenderer>().bounds.size.x;
+        nodeHeight = nodePrefab.GetComponent<SpriteRenderer>().bounds.size.y;
+        Debug.Log("Node Height: " + nodeHeight);
+        Debug.Log("Node Width: " + nodeWidth);
 
-        availablePlaces = new List<Vector3>();
+        PopulateGrid();
+        
 
-        tileMap.SetTile(new Vector3Int(-2, -4, 0), defaultTile);
-
-        #region Take All Tiles On Map and Convert them into a Vector3 List
-        //for (int n = tileMap.cellBounds.xMin; n < tileMap.cellBounds.xMax; n++)
-        //{
-        //    for (int p = tileMap.cellBounds.yMin; p < tileMap.cellBounds.yMax; p++)
-        //    {
-        //        Vector3Int localPlace = new Vector3Int(n, p, (int)tileMap.transform.position.y);
-        //        Vector3 place = tileMap.CellToWorld(localPlace);
-        //        if (tileMap.HasTile(localPlace))
-        //        {
-        //            //Tile at "place"
-        //            availablePlaces.Add(place);
-        //        }
-        //        else
-        //        {
-        //            //No tile at "place"
-        //        }
-        //    }
-        //}
-        #endregion
+       
 
     }
 
@@ -61,13 +40,27 @@ public class HexagonGrid : MonoBehaviour
     /// </summary>
     public void PopulateGrid()
     {
-        for (int i = 0; i < width; i++)
+        Vector3 location;
+
+        for (int j = 0; j < height; j++)
         {
-            for (int j = 0; j < height; j++)
+            for (int i = 0; i < width; i++)
             {
+                location = new Vector3(i, 0, 0) * nodeWidth +
+                    new Vector3(0, j, 0) * nodeHeight * .75f +
+                    ((j % 2) == 0 ? Vector3.zero : new Vector3(1, 0, 0) * nodeWidth * .5f);
+
+                grid[i, j] = Instantiate(nodePrefab, location, Quaternion.identity, transform).GetComponent<Node>();
                 grid[i, j].x = i;
                 grid[i, j].y = j;
-                AddVertex(grid[i, j]);
+
+                Node gridNode = grid[i, j].GetComponent<Node>();
+
+                AddVertex(gridNode);
+
+
+
+
             }
         }
     }

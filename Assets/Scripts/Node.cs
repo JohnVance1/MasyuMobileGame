@@ -29,10 +29,7 @@ public class Node : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        foreach(Node node in Edges) 
-        { 
-            
-        }
+        
     }
 
 
