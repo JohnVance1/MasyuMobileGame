@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
+using Sirenix.OdinInspector;
 public enum NodeType
 {
     None,
@@ -13,9 +13,11 @@ public enum NodeType
 }
 
 
-public class Node : MonoBehaviour
+public class Node : SerializedMonoBehaviour
 {
     public NodeType type;
+
+    [SerializeField]
     public List<Node> Edges { get; set; }
 
     public bool IsSatisfied { get; private set; }

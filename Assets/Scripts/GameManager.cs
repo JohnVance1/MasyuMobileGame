@@ -5,16 +5,18 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
+    public TouchManager touchManager;
+    public HexagonGrid grid;
 
-    // Update is called once per frame
-    void Update()
+
+    private void OnEnable()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-           
-        
-   
-                
-        }
+        TouchManager.addEdge += grid.AddAnEdge;
+    }
+
+    private void OnDisable()
+    {
+        TouchManager.addEdge -= grid.AddAnEdge;
+
     }
 }
