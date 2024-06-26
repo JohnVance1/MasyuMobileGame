@@ -13,13 +13,20 @@ public class HexagonGrid : MonoBehaviour
 
     private float nodeWidth;
     private float nodeHeight;
-     
+
+    public Node[,] grid = new Node[width, height];
+
+    public List<Node> AdjacencyList { get; set; }
+
 
     public void Start()
     {
         AdjacencyList = new List<Node>();
-        nodeWidth = nodePrefab.GetComponent<SpriteRenderer>().bounds.size.x;
-        nodeHeight = nodePrefab.GetComponent<SpriteRenderer>().bounds.size.y;
+        nodeWidth = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.x;
+        nodeHeight = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
+        //nodeWidth = transform.localScale.x;
+        //nodeHeight = transform.localScale.y;
+
         Debug.Log("Node Height: " + nodeHeight);
         Debug.Log("Node Width: " + nodeWidth);
 
@@ -28,12 +35,15 @@ public class HexagonGrid : MonoBehaviour
 
        
 
+    }  
+
+    private void Update()
+    {
+        foreach (Node node in AdjacencyList)
+        {
+            node.CheckNodeBehavior();
+        }
     }
-
-    public Node[,] grid = new Node[width, height];
-
-    public List<Node> AdjacencyList { get; set; }
-
 
     /// <summary>
     /// Sets up the grid verticies and the adjacency matrix
@@ -63,6 +73,9 @@ public class HexagonGrid : MonoBehaviour
 
             }
         }
+
+        grid[2, 2].type = NodeType.SharpTurn;
+        grid[2, 2].GetComponentInChildren<SpriteRenderer>().color = Color.red;
     }
 
     /// <summary>

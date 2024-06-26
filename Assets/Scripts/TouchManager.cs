@@ -58,6 +58,10 @@ public class TouchManager : MonoBehaviour
                 }          
 
             }
+            else
+            {
+                isDragging = false;
+            }
             return null;
         }
     }
@@ -138,8 +142,7 @@ public class TouchManager : MonoBehaviour
             return null;
         }
         if (hit.transform.GetComponent<Node>() != null)
-        {
-            
+        {            
             return hit.transform.GetComponent<Node>();
         }
         return null;

@@ -28,9 +28,23 @@ public class Node : SerializedMonoBehaviour
     public int y;
 
 
+    private void Awake()
+    {
+        Edges = new List<Node>();
+    }
+
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.red;
+        if(Edges.Count > 0 )
+        {
+            foreach (var edge in Edges)
+            {
+                Gizmos.DrawLine(transform.position, edge.transform.position);
+
+            }
+        }
         
     }
 
@@ -45,7 +59,7 @@ public class Node : SerializedMonoBehaviour
         {
             if (type == NodeType.SharpTurn)
             {
-                if (!CheckEdgesTurn(Edges[0], Edges[1]))
+                if (!CheckEdgesSharpTurn(Edges[0], Edges[1]))
                 {
                     ErrorDisplay();
                     IsSatisfied = false;
@@ -68,6 +82,10 @@ public class Node : SerializedMonoBehaviour
                     IsSatisfied = true;
 
                 }
+
+            }
+            else if(type == NodeType.WideTurn)
+            {
 
             }
             else if (type == NodeType.None)
@@ -95,8 +113,7 @@ public class Node : SerializedMonoBehaviour
     /// <returns></returns>
     public bool CheckEdgesSraight(Node s1, Node s2)
     {
-        if (((s1.x + 1 == s2.x - 1 || s2.x + 1 == s1.x - 1) && (s1.y == s2.y)) ||
-            ((s1.y + 1 == s2.y - 1 || s2.y + 1 == s1.y - 1) && (s1.x == s2.x)))
+        if (Vector3.Dot(s1.transform.position - transform.position, transform.position - s2.transform.position) == 1)
         {
             return true;
         }
@@ -110,13 +127,24 @@ public class Node : SerializedMonoBehaviour
     /// <param name="s1"></param>
     /// <param name="s2"></param>
     /// <returns></returns>
-    public bool CheckEdgesTurn(Node s1, Node s2)
+    public bool CheckEdgesWideTurn(Node s1, Node s2)
     {
-        if ((s1.x + 1 == s2.x && s1.y + 1 == s2.y) ||
-            (s1.x - 1 == s2.x && s1.y - 1 == s2.y) ||
-            (s1.x + 1 == s2.x && s1.y - 1 == s2.y) ||
-            (s1.x - 1 == s2.x && s1.y + 1 == s2.y) ||
-            (s1.x == s2.y && s1.y == s2.x))
+        if (Vector3.Dot(s1.transform.position - transform.position, transform.position - s2.transform.position) > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Checks to see if the 2 edges attached to a node are perpendicular
+    /// </summary>
+    /// <param name="s1"></param>
+    /// <param name="s2"></param>
+    /// <returns></returns>
+    public bool CheckEdgesSharpTurn(Node s1, Node s2)
+    {
+        if (Vector3.Dot(s1.transform.position - transform.position, transform.position - s2.transform.position) < 0)
         {
             return true;
         }
