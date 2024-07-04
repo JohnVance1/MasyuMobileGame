@@ -17,11 +17,14 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         TouchManager.addEdge += grid.AddAnEdge;
+        TouchManager.removeEdge += grid.RemoveAnEdge;
+
     }
 
     private void OnDisable()
     {
         TouchManager.addEdge -= grid.AddAnEdge;
+        TouchManager.removeEdge -= grid.RemoveAnEdge;
 
     }
 }

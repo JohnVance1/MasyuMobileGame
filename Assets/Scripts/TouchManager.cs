@@ -21,6 +21,8 @@ public class TouchManager : MonoBehaviour
     public delegate bool AddEdge(Node n1, Node n2);
     public static event AddEdge addEdge;
 
+    public delegate bool RemoveEdge(Node n1, Node n2);
+    public static event RemoveEdge removeEdge;
 
     private Vector3 WorldPos
     {
@@ -113,6 +115,10 @@ public class TouchManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Runs when the Player presses and holds down their finger or mousebutton
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Drag()
     {
         isDragging = true;
@@ -124,9 +130,17 @@ public class TouchManager : MonoBehaviour
             Node tempNode = isNewNode;
             if (tempNode != null)
             {
-                addEdge?.Invoke(currentNode, tempNode);
+                if(currentNode.Edges.Contains(tempNode))
+                {
+                    removeEdge?.Invoke(currentNode, tempNode);
+                }
+                else
+                {
+                    addEdge?.Invoke(currentNode, tempNode);
+                }
+
                 currentNode = tempNode;
-                Debug.Log($"Current Node - X: {currentNode.x} Y: {currentNode.y}");
+                //Debug.Log($"Current Node - X: {currentNode.x} Y: {currentNode.y}");
             }
             //transform.position = WorldPos + offset;
             yield return null;

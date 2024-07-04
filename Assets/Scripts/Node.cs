@@ -117,11 +117,20 @@ public class Node : SerializedMonoBehaviour
             }
             else if(type == NodeType.WideTurn)
             {
+                if (!CheckEdgesWideTurn(Edges[0], Edges[1]))
+                {
+                    ErrorDisplay();
+                    IsSatisfied = false;
+                }
+                else
+                {
+                    IsSatisfied = true;
 
+                }
             }
             else if (type == NodeType.None)
             {
-                ErrorDisplay();
+                //IsSatisfied = true;
 
             }
         }
@@ -144,7 +153,7 @@ public class Node : SerializedMonoBehaviour
     /// <returns></returns>
     public bool CheckEdgesSraight(Node s1, Node s2)
     {
-        if (Vector3.Dot(s1.transform.position - transform.position, transform.position - s2.transform.position) == 1)
+        if (Vector3.Dot((s1.transform.position - transform.position).normalized, (transform.position - s2.transform.position).normalized) == 1)
         {
             return true;
         }

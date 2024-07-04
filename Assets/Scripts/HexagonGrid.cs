@@ -54,7 +54,7 @@ public class HexagonGrid : MonoBehaviour
             node.CheckNodeBehavior();
         }
 
-        if (isCyclic())
+        if (IsCyclic())
         {
             Debug.Log("Graph contains cycle");
         }
@@ -125,6 +125,7 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
+    #region Edge Methods
 
     /// <summary>
     /// Removes all of the Edge's on each Space
@@ -205,10 +206,13 @@ public class HexagonGrid : MonoBehaviour
 
     }
 
-    // A recursive function that uses visited[]
+    #endregion
+
+
+    // A recursive function that uses visited
     // and parent to detect cycle in subgraph
     // reachable from vertex v.
-    bool isCyclicUtil(Node v, List<Node> visited, Node parent)
+    bool IsCyclicUtil(Node v, List<Node> visited, List<Node> path, Node parent)
     {
         // Mark the current node as visited
         visited.Find(temp => temp == v).Visited = true;
@@ -221,28 +225,38 @@ public class HexagonGrid : MonoBehaviour
             // then recur for that adjacent
             if (!visited.Find(temp => temp == node).Visited)
             {
-                if (isCyclicUtil(node, visited, v))
+                if (IsCyclicUtil(node, visited, path, v))
+                {
+                    path.Add(node);
                     return true;
+                }
             }
 
             // If an adjacent is visited and
             // not parent of current vertex,
             // then there is a cycle.
             else if (node != parent)
+            {
+                path.Add(node);
                 return true;
+            }
         }
         return false;
     }
 
-    // Returns true if the graph contains
-    // a cycle, else false.
-    private bool isCyclic()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns> If there is a path that loops and has all of the special Nodes included </returns>
+    private bool IsCyclic()
     {
         // Mark all the vertices as not visited
         // and not part of recursion stack
         int count = AdjacencyList.Count;
 
         List<Node> visited = new List<Node>(AdjacencyList);
+        List<Node> path = new List<Node>();
+
         for (int i = 0; i < count; i++)
         {
             visited[i].Visited = false;
@@ -254,12 +268,36 @@ public class HexagonGrid : MonoBehaviour
             // Don't recur for u if already visited
             if (!visited[u].Visited)
             { 
-                if (isCyclicUtil(visited[u], visited, null))
-                    return true;
+                if (IsCyclicUtil(visited[u], visited, path, null))
+                {
+                    if(DoesLoopContainSpecialNodes(path))
+                    {
+                        return true;
+                    }
+                    return false;
+                }                    
             }
         }
         return false;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="path"> Takes in the Loop from IsCyclic() </param>
+    /// <returns> Checks if all of the Special Nodes are included in the loop </returns>
+    public bool DoesLoopContainSpecialNodes(List<Node> path)
+    {
+        foreach(Node node in SpecialNodes)
+        {
+            if(!path.Contains(node))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /// <summary>
     /// Checks to see if there is a completed loop that combines all of the special nodes
