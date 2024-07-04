@@ -24,6 +24,8 @@ public class Node : SerializedMonoBehaviour
 
     public bool IsError { get; private set; }
 
+    public bool Visited { get; set; }
+
     public int x;
     public int y;
 
@@ -31,6 +33,7 @@ public class Node : SerializedMonoBehaviour
     private void Awake()
     {
         Edges = new List<Node>();
+        Visited = false;
     }
 
     public void UpdateColor()

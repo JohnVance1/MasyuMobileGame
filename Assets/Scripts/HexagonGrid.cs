@@ -53,6 +53,15 @@ public class HexagonGrid : MonoBehaviour
         {
             node.CheckNodeBehavior();
         }
+
+        if (isCyclic())
+        {
+            Debug.Log("Graph contains cycle");
+        }
+        else
+        {
+            Debug.Log("Graph doesn't contain cycle");
+        }
     }
 
     /// <summary>
@@ -199,59 +208,64 @@ public class HexagonGrid : MonoBehaviour
     // A recursive function that uses visited[]
     // and parent to detect cycle in subgraph
     // reachable from vertex v.
-    //bool isCyclicUtil(int v, bool[] visited, int parent)
-    //{
-    //    // Mark the current node as visited
-    //    visited[v] = true;
+    bool isCyclicUtil(Node v, List<Node> visited, Node parent)
+    {
+        // Mark the current node as visited
+        visited.Find(temp => temp == v).Visited = true;
 
-    //    // Recur for all the vertices
-    //    // adjacent to this vertex
-    //    foreach (int i in adj[v])
-    //    {
-    //        // If an adjacent is not visited,
-    //        // then recur for that adjacent
-    //        if (!visited[i])
-    //        {
-    //            if (isCyclicUtil(i, visited, v))
-    //                return true;
-    //        }
+        // Recur for all the vertices
+        // adjacent to this vertex
+        foreach (Node node in AdjacencyList.Find(temp => temp == v).Edges)
+        {
+            // If an adjacent is not visited,
+            // then recur for that adjacent
+            if (!visited.Find(temp => temp == node).Visited)
+            {
+                if (isCyclicUtil(node, visited, v))
+                    return true;
+            }
 
-    //        // If an adjacent is visited and
-    //        // not parent of current vertex,
-    //        // then there is a cycle.
-    //        else if (i != parent)
-    //            return true;
-    //    }
-    //    return false;
-    //}
+            // If an adjacent is visited and
+            // not parent of current vertex,
+            // then there is a cycle.
+            else if (node != parent)
+                return true;
+        }
+        return false;
+    }
 
     // Returns true if the graph contains
     // a cycle, else false.
-    //Boolean isCyclic()
-    //{
-    //    // Mark all the vertices as not visited
-    //    // and not part of recursion stack
-    //    Boolean[] visited = new Boolean[V];
-    //    for (int i = 0; i < V; i++)
-    //        visited[i] = false;
+    private bool isCyclic()
+    {
+        // Mark all the vertices as not visited
+        // and not part of recursion stack
+        int count = AdjacencyList.Count;
 
-    //    // Call the recursive helper function
-    //    // to detect cycle in different DFS trees
-    //    for (int u = 0; u < V; u++)
+        List<Node> visited = new List<Node>(AdjacencyList);
+        for (int i = 0; i < count; i++)
+        {
+            visited[i].Visited = false;
+        }
+        // Call the recursive helper function
+        // to detect cycle in different DFS trees
+        for (int u = 0; u < count; u++)
+        {
+            // Don't recur for u if already visited
+            if (!visited[u].Visited)
+            { 
+                if (isCyclicUtil(visited[u], visited, null))
+                    return true;
+            }
+        }
+        return false;
+    }
 
-    //        // Don't recur for u if already visited
-    //        if (!visited[u])
-    //            if (isCyclicUtil(u, visited, -1))
-    //                return true;
-
-    //    return false;
-    //}
-
-        /// <summary>
-        /// Checks to see if there is a completed loop that combines all of the special nodes
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+    /// <summary>
+    /// Checks to see if there is a completed loop that combines all of the special nodes
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
     public void CheckCompleteLoop(Node start, Node end)
     {
         Dictionary<Node, bool> visited = new Dictionary<Node, bool>();
