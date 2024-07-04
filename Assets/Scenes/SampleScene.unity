@@ -505,6 +505,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   touchManager: {fileID: 1681263590}
   grid: {fileID: 1503500676}
+  levels:
+  - {fileID: 11400000, guid: bb3e685704d3bf14ca2b4bb4af54f56d, type: 2}
 --- !u!4 &1382439814
 Transform:
   m_ObjectHideFlags: 0
@@ -564,7 +566,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 011d038a95ce4ea488638934bd102b28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  width: 0
+  height: 0
   nodePrefab: {fileID: -6266856609446739051, guid: 9beab178bb66400459b7ad59521cd800, type: 3}
+  LevelInfo: {fileID: 0}
+  AdjacencyList: []
+  SpecialNodes: []
 --- !u!1 &1681263587
 GameObject:
   m_ObjectHideFlags: 0

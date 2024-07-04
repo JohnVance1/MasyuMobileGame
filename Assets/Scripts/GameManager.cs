@@ -7,7 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public TouchManager touchManager;
     public HexagonGrid grid;
+    public List<LevelBaseObject> levels;
 
+    private void Awake()
+    {
+        grid.LevelInfo = levels[0];
+    }
 
     private void OnEnable()
     {

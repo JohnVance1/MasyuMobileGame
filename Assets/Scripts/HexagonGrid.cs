@@ -6,22 +6,25 @@ using UnityEngine.Tilemaps;
 
 public class HexagonGrid : MonoBehaviour
 {
-    public const int width = 6;  // Width should always be 1 more than the Height
-    public const int height = 6;
+    public int width;  // Width should always be 1 more than the Height
+    public int height;
 
     public Node nodePrefab;
 
     private float nodeWidth;
     private float nodeHeight;
 
-    public Node[,] grid = new Node[width, height];
+    public Node[,] grid;
+    public LevelBaseObject LevelInfo;
 
-    public List<Node> AdjacencyList { get; set; }
+    public List<Node> AdjacencyList;
 
+    public List<Node> SpecialNodes;
 
     public void Start()
     {
         AdjacencyList = new List<Node>();
+        SpecialNodes = new List<Node>();
         nodeWidth = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.x;
         nodeHeight = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
         //nodeWidth = transform.localScale.x;
@@ -30,10 +33,11 @@ public class HexagonGrid : MonoBehaviour
         Debug.Log("Node Height: " + nodeHeight);
         Debug.Log("Node Width: " + nodeWidth);
 
-        PopulateGrid();
-        
+        grid = LevelInfo.map;
+        width = LevelInfo.width;
+        height = LevelInfo.height;
 
-       
+        PopulateGrid();       
 
     }  
 
@@ -67,16 +71,45 @@ public class HexagonGrid : MonoBehaviour
                 Node gridNode = grid[i, j].GetComponent<Node>();
 
                 AddVertex(gridNode);
+            }
+        }
+        SetSpecialNodes();
 
 
 
+        //grid[2, 2].type = NodeType.SharpTurn;
 
+        foreach (Node node in AdjacencyList)
+        {
+            if (node.type != NodeType.None)
+            {
+                SpecialNodes.Add(node);
+                node.UpdateColor();
             }
         }
 
-        grid[2, 2].type = NodeType.SharpTurn;
-        grid[2, 2].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        //grid[2, 2].GetComponentInChildren<SpriteRenderer>().color = Color.red;
     }
+
+
+    public void SetSpecialNodes()
+    {
+        foreach (Vector2Int loc in LevelInfo.straightNodeLocations)
+        {
+            grid[loc.x, loc.y].type = NodeType.Straight;
+        }
+
+        foreach (Vector2Int loc in LevelInfo.sharpTurnNodeLocations)
+        {
+            grid[loc.x, loc.y].type = NodeType.SharpTurn;
+        }
+
+        foreach (Vector2Int loc in LevelInfo.wideTurnNodeLocations)
+        {
+            grid[loc.x, loc.y].type = NodeType.WideTurn;
+        }
+    }
+
 
     /// <summary>
     /// Removes all of the Edge's on each Space

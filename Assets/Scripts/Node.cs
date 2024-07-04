@@ -6,10 +6,10 @@ using Sirenix.OdinInspector;
 public enum NodeType
 {
     None,
-    Straight,
-    SharpTurn,
-    WideTurn,
-    Required
+    Straight,   // Salt
+    SharpTurn,  // Sulfur
+    WideTurn,   // Mercury
+    Required    // Fire, Water, Earth, Air
 }
 
 
@@ -31,6 +31,34 @@ public class Node : SerializedMonoBehaviour
     private void Awake()
     {
         Edges = new List<Node>();
+    }
+
+    public void UpdateColor()
+    {
+        switch(type)
+        {
+            case NodeType.None:
+                break;
+
+            case NodeType.Straight:
+                GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+                break;
+
+            case NodeType.SharpTurn:
+                GetComponentInChildren<SpriteRenderer>().color = Color.yellow;
+                break;
+
+            case NodeType.WideTurn:
+                GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                break;
+
+            case NodeType.Required:
+                GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+                break;
+
+            default:
+                break;
+        }
     }
 
 
