@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using UnityEngine.Tilemaps;
+using System.IO;
+using UnityEditor.Experimental.GraphView;
+using System;
 
 public class HexagonGrid : MonoBehaviour
 {
@@ -21,6 +24,8 @@ public class HexagonGrid : MonoBehaviour
 
     public List<Node> SpecialNodes;
 
+    public bool PathFound;
+
     public void Start()
     {
         AdjacencyList = new List<Node>();
@@ -29,6 +34,7 @@ public class HexagonGrid : MonoBehaviour
         nodeHeight = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
         //nodeWidth = transform.localScale.x;
         //nodeHeight = transform.localScale.y;
+        PathFound = false;
 
         Debug.Log("Node Height: " + nodeHeight);
         Debug.Log("Node Width: " + nodeWidth);
@@ -189,6 +195,145 @@ public class HexagonGrid : MonoBehaviour
         return false;
 
     }
+
+    // A recursive function that uses visited[]
+    // and parent to detect cycle in subgraph
+    // reachable from vertex v.
+    //bool isCyclicUtil(int v, bool[] visited, int parent)
+    //{
+    //    // Mark the current node as visited
+    //    visited[v] = true;
+
+    //    // Recur for all the vertices
+    //    // adjacent to this vertex
+    //    foreach (int i in adj[v])
+    //    {
+    //        // If an adjacent is not visited,
+    //        // then recur for that adjacent
+    //        if (!visited[i])
+    //        {
+    //            if (isCyclicUtil(i, visited, v))
+    //                return true;
+    //        }
+
+    //        // If an adjacent is visited and
+    //        // not parent of current vertex,
+    //        // then there is a cycle.
+    //        else if (i != parent)
+    //            return true;
+    //    }
+    //    return false;
+    //}
+
+    // Returns true if the graph contains
+    // a cycle, else false.
+    //Boolean isCyclic()
+    //{
+    //    // Mark all the vertices as not visited
+    //    // and not part of recursion stack
+    //    Boolean[] visited = new Boolean[V];
+    //    for (int i = 0; i < V; i++)
+    //        visited[i] = false;
+
+    //    // Call the recursive helper function
+    //    // to detect cycle in different DFS trees
+    //    for (int u = 0; u < V; u++)
+
+    //        // Don't recur for u if already visited
+    //        if (!visited[u])
+    //            if (isCyclicUtil(u, visited, -1))
+    //                return true;
+
+    //    return false;
+    //}
+
+        /// <summary>
+        /// Checks to see if there is a completed loop that combines all of the special nodes
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+    public void CheckCompleteLoop(Node start, Node end)
+    {
+        Dictionary<Node, bool> visited = new Dictionary<Node, bool>();
+        Dictionary<Node, Node> path = new Dictionary<Node, Node>();
+
+        Queue<Node> worklist = new Queue<Node>();
+
+        visited.Add(start, false);
+
+        worklist.Enqueue(start);
+
+        while (worklist.Count != 0)
+        {
+            Node node = worklist.Dequeue();
+
+            foreach (Node neighbor in node.Edges)
+            {
+                if (!visited.ContainsKey(neighbor))
+                {
+                    visited.Add(neighbor, true);
+                    path.Add(neighbor, node);
+                    worklist.Enqueue(neighbor);
+                }
+            }
+        }
+
+        if (path.ContainsKey(end) && CheckSpecialNodes())
+        {
+            Node startEnd = end;
+            while (end != start)
+            {
+                //Debug.Log(startEnd + ": " + end);
+                Debug.Log("Path Found!!!");
+
+                end = path[end];
+            }
+            PathFound = true;
+        }
+    }
+
+    /// <summary>
+    /// Checks each of the Straight, SharpTurn, and WideTurn Nodes to see if their conditions are met
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckSpecialNodes()
+    {
+        foreach(Node node in SpecialNodes)
+        {
+            if(!node.IsSatisfied)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //public bool DetectLoop(Node h)
+    //{
+    //    HashSet<Node> s = new HashSet<Node>();
+
+        
+
+
+    //    while (h != null)
+    //    {
+    //        // If we have already has this node
+    //        // in hashmap it means there is a cycle
+    //        // (Because you we encountering the
+    //        // node second time).
+    //        if (s.Contains(h))
+    //            return true;
+
+    //        // If we are seeing the node for
+    //        // the first time, insert it in hash
+    //        s.Add(h);
+
+    //        h = h.next;
+    //    }
+
+    //    return false;
+    //}
+
 
 
 
