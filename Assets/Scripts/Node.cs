@@ -131,16 +131,21 @@ public class Node : SerializedMonoBehaviour
             else if (type == NodeType.None)
             {
                 //IsSatisfied = true;
+                IsSatisfied = true;
 
             }
         }
         else if (Edges.Count > 2)
         {
             ErrorDisplay();
+            IsSatisfied = false;
+
         }
         else
         {
             //Icon.color = Color.white;
+            ErrorDisplay();
+            IsSatisfied = false;
 
         }
     }

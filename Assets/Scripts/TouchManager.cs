@@ -40,7 +40,7 @@ public class TouchManager : MonoBehaviour
             if (node != null)
             {
                 currentNode = node;
-                Debug.Log($"Current Node - X: {currentNode.x} Y: {currentNode.y}");
+                //Debug.Log($"Current Node - X: {currentNode.x} Y: {currentNode.y}");
                 return true;
             }
             return false;

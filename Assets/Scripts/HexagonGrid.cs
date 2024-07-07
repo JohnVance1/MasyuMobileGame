@@ -24,12 +24,19 @@ public class HexagonGrid : MonoBehaviour
 
     public List<Node> SpecialNodes;
 
+    private List<Node> NodesWithEdges;
+
+    //private List<Node> visited; 
+    private List<Node> path;
+
     public bool PathFound;
 
     public void Start()
     {
         AdjacencyList = new List<Node>();
         SpecialNodes = new List<Node>();
+        NodesWithEdges = new List<Node>();
+        path = new List<Node>();
         nodeWidth = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.x;
         nodeHeight = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
         //nodeWidth = transform.localScale.x;
@@ -48,7 +55,7 @@ public class HexagonGrid : MonoBehaviour
     }  
 
     private void Update()
-    {
+    {        
         foreach (Node node in AdjacencyList)
         {
             node.CheckNodeBehavior();
@@ -89,7 +96,7 @@ public class HexagonGrid : MonoBehaviour
             }
         }
         SetSpecialNodes();
-
+        //visited = new List<Node>(AdjacencyList);
 
 
         //grid[2, 2].type = NodeType.SharpTurn;
@@ -136,6 +143,7 @@ public class HexagonGrid : MonoBehaviour
         {
             sp.Edges.Clear();
         }
+        NodesWithEdges.Clear();
     }
 
     /// <summary>
@@ -167,6 +175,10 @@ public class HexagonGrid : MonoBehaviour
         // Add vertex v1 to the edges of vertex v2
         AdjacencyList.Find(v => v == v2).Edges.Add(v1);
 
+        NodesWithEdges.Add(v1);
+        NodesWithEdges.Add(v2);
+
+
         return true;
     }
 
@@ -185,6 +197,9 @@ public class HexagonGrid : MonoBehaviour
 
         // Remove vertex v1 to the edges of vertex v2
         AdjacencyList.Find(v => v == v2).Edges.Remove(v1);
+
+        NodesWithEdges.Remove(v1);
+        NodesWithEdges.Remove(v2);
 
         return true;
     }
@@ -212,10 +227,10 @@ public class HexagonGrid : MonoBehaviour
     // A recursive function that uses visited
     // and parent to detect cycle in subgraph
     // reachable from vertex v.
-    bool IsCyclicUtil(Node v, List<Node> visited, List<Node> path, Node parent)
+    bool IsCyclicUtil(Node v, List<Node> NWE, List<Node> path, Node parent)
     {
         // Mark the current node as visited
-        visited.Find(temp => temp == v).Visited = true;
+        NWE.Find(temp => temp == v).Visited = true;
 
         // Recur for all the vertices
         // adjacent to this vertex
@@ -223,9 +238,9 @@ public class HexagonGrid : MonoBehaviour
         {
             // If an adjacent is not visited,
             // then recur for that adjacent
-            if (!visited.Find(temp => temp == node).Visited)
+            if (!NWE.Find(temp => temp == node).Visited)
             {
-                if (IsCyclicUtil(node, visited, path, v))
+                if (IsCyclicUtil(node, NWE, path, v))
                 {
                     path.Add(node);
                     return true;
@@ -241,6 +256,10 @@ public class HexagonGrid : MonoBehaviour
                 return true;
             }
         }
+        if (path.Count > 0)
+        {
+            path.Clear();
+        }
         return false;
     }
 
@@ -252,30 +271,31 @@ public class HexagonGrid : MonoBehaviour
     {
         // Mark all the vertices as not visited
         // and not part of recursion stack
-        int count = AdjacencyList.Count;
+        int count = NodesWithEdges.Count;
 
-        List<Node> visited = new List<Node>(AdjacencyList);
-        List<Node> path = new List<Node>();
+
 
         for (int i = 0; i < count; i++)
         {
-            visited[i].Visited = false;
+            NodesWithEdges[i].Visited = false;
         }
         // Call the recursive helper function
         // to detect cycle in different DFS trees
         for (int u = 0; u < count; u++)
         {
             // Don't recur for u if already visited
-            if (!visited[u].Visited)
+            if (!NodesWithEdges[u].Visited)
             { 
-                if (IsCyclicUtil(visited[u], visited, path, null))
+                if (IsCyclicUtil(NodesWithEdges[u], NodesWithEdges, path, null))
                 {
-                    if(DoesLoopContainSpecialNodes(path))
+                    if (DoesLoopContainSpecialNodes() && AreNodesSatisfied())
                     {
                         return true;
-                    }
+                    }                    
+
                     return false;
-                }                    
+                }   
+                
             }
         }
         return false;
@@ -286,7 +306,7 @@ public class HexagonGrid : MonoBehaviour
     /// </summary>
     /// <param name="path"> Takes in the Loop from IsCyclic() </param>
     /// <returns> Checks if all of the Special Nodes are included in the loop </returns>
-    public bool DoesLoopContainSpecialNodes(List<Node> path)
+    public bool DoesLoopContainSpecialNodes()
     {
         foreach(Node node in SpecialNodes)
         {
@@ -295,6 +315,31 @@ public class HexagonGrid : MonoBehaviour
                 return false;
             }
         }
+        return true;
+    }
+
+    public bool AreNodesSatisfied()
+    {
+        foreach (Node node in NodesWithEdges)
+        {
+            if (!path.Contains(node))
+            {
+                path.Clear();
+                return false;
+
+            }
+        }
+
+        foreach (Node node in path)
+        {
+            
+            if (!node.IsSatisfied)
+            {
+                path.Clear();
+                return false;
+            }
+        }
+        
         return true;
     }
 
@@ -360,31 +405,14 @@ public class HexagonGrid : MonoBehaviour
         return true;
     }
 
-    //public bool DetectLoop(Node h)
-    //{
-    //    HashSet<Node> s = new HashSet<Node>();
-
-        
-
-
-    //    while (h != null)
-    //    {
-    //        // If we have already has this node
-    //        // in hashmap it means there is a cycle
-    //        // (Because you we encountering the
-    //        // node second time).
-    //        if (s.Contains(h))
-    //            return true;
-
-    //        // If we are seeing the node for
-    //        // the first time, insert it in hash
-    //        s.Add(h);
-
-    //        h = h.next;
-    //    }
-
-    //    return false;
-    //}
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        foreach (Node node in path)
+        {
+            Gizmos.DrawSphere(node.transform.position, .2f);
+        }
+    }
 
 
 
