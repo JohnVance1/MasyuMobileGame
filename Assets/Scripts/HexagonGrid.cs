@@ -31,14 +31,23 @@ public class HexagonGrid : MonoBehaviour
 
     public bool PathFound;
 
+    public GameObject LineOBJ;
+
+    public Vector3[] compass = { Vector3.right,
+        new Vector3(.5f, 0.86602540378f, 0),
+        new Vector3(-.5f, 0.86602540378f, 0),
+        Vector3.left,
+        new Vector3(-.5f, -0.86602540378f, 0),
+        new Vector3(.5f, -0.86602540378f, 0) };
+
     public void Start()
     {
         AdjacencyList = new List<Node>();
         SpecialNodes = new List<Node>();
         NodesWithEdges = new List<Node>();
         path = new List<Node>();
-        nodeWidth = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.x;
-        nodeHeight = nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
+        nodeWidth = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
+        nodeHeight = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y;
         //nodeWidth = transform.localScale.x;
         //nodeHeight = transform.localScale.y;
         PathFound = false;
@@ -146,6 +155,141 @@ public class HexagonGrid : MonoBehaviour
         NodesWithEdges.Clear();
     }
 
+    
+
+    public Vector3 ClosestDirection(Vector3 v)
+    {
+        float maxDot = -Mathf.Infinity;
+        Vector3 ret = Vector3.zero;
+
+        foreach (Vector3 dir in compass)
+        {
+            float t = Vector3.Dot(v, dir);
+            if (t > maxDot)
+            {
+                ret = dir;
+                maxDot = t;
+            }
+        }
+
+        return ret;
+    }
+
+    public void DrawLine(Node n1, Node n2)
+    {
+        Vector3 lineDirection = (n2.transform.position - n1.transform.position).normalized;
+
+        lineDirection = ClosestDirection(lineDirection);
+        GameObject edge;
+
+        if (lineDirection == compass[0])
+        {
+            edge = n1.Lines[0];
+            edge.SetActive(true);
+            edge = n2.Lines[3];
+            edge.SetActive(true);
+
+        }
+        else if (lineDirection == compass[1])
+        {
+            edge = n1.Lines[1];
+            edge.SetActive(true);
+            edge = n2.Lines[4];
+            edge.SetActive(true);
+
+        }
+        else if (lineDirection == compass[2])
+        {
+            edge = n1.Lines[2];
+            edge.SetActive(true);
+            edge = n2.Lines[5];
+            edge.SetActive(true);
+
+        }
+        else if (lineDirection == compass[3])
+        {
+            edge = n1.Lines[3];
+            edge.SetActive(true);
+            edge = n2.Lines[0];
+            edge.SetActive(true);
+
+        }
+        else if (lineDirection == compass[4])
+        {
+            edge = n1.Lines[4];
+            edge.SetActive(true);
+            edge = n2.Lines[1];
+            edge.SetActive(true);
+
+        }
+        else if (lineDirection == compass[5])
+        {
+            edge = n1.Lines[5];
+            edge.SetActive(true);
+            edge = n2.Lines[2];
+            edge.SetActive(true);
+
+        }
+        
+    }
+    public void EraseLine(Node n1, Node n2)
+    {
+        Vector3 lineDirection = (n2.transform.position - n1.transform.position).normalized;
+
+        lineDirection = ClosestDirection(lineDirection);
+        GameObject edge;
+
+        if (lineDirection == compass[0])
+        {
+            edge = n1.Lines[0];
+            edge.SetActive(false);
+            edge = n2.Lines[3];
+            edge.SetActive(false);
+
+        }
+        else if (lineDirection == compass[1])
+        {
+            edge = n1.Lines[1];
+            edge.SetActive(false);
+            edge = n2.Lines[4];
+            edge.SetActive(false);
+
+        }
+        else if (lineDirection == compass[2])
+        {
+            edge = n1.Lines[2];
+            edge.SetActive(false);
+            edge = n2.Lines[5];
+            edge.SetActive(false);
+
+        }
+        else if (lineDirection == compass[3])
+        {
+            edge = n1.Lines[3];
+            edge.SetActive(false);
+            edge = n2.Lines[0];
+            edge.SetActive(false);
+
+        }
+        else if (lineDirection == compass[4])
+        {
+            edge = n1.Lines[4];
+            edge.SetActive(false);
+            edge = n2.Lines[1];
+            edge.SetActive(false);
+
+        }
+        else if (lineDirection == compass[5])
+        {
+            edge = n1.Lines[5];
+            edge.SetActive(false);
+            edge = n2.Lines[2];
+            edge.SetActive(false);
+
+        }
+    }
+
+
     /// <summary>
     /// Adds a new vertex to the graph
     /// </summary>
@@ -177,7 +321,7 @@ public class HexagonGrid : MonoBehaviour
 
         NodesWithEdges.Add(v1);
         NodesWithEdges.Add(v2);
-
+        DrawLine(v1, v2);
 
         return true;
     }
@@ -200,6 +344,7 @@ public class HexagonGrid : MonoBehaviour
 
         NodesWithEdges.Remove(v1);
         NodesWithEdges.Remove(v2);
+        EraseLine(v1, v2);
 
         return true;
     }

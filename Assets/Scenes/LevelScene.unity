@@ -573,6 +573,7 @@ MonoBehaviour:
   AdjacencyList: []
   SpecialNodes: []
   PathFound: 0
+  LineOBJ: {fileID: 6477118307058694222, guid: bd7d0656541d2f740a81e05086405f16, type: 3}
 --- !u!1 &1681263587
 GameObject:
   m_ObjectHideFlags: 0

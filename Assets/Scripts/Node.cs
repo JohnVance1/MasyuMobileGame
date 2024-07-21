@@ -20,6 +20,9 @@ public class Node : SerializedMonoBehaviour
     [SerializeField]
     public List<Node> Edges { get; set; }
 
+    [SerializeField]
+    public GameObject[] Lines { get; private set; }
+
     public bool IsSatisfied { get; private set; }
 
     public bool IsError { get; private set; }
@@ -28,6 +31,8 @@ public class Node : SerializedMonoBehaviour
 
     public int x;
     public int y;
+
+
 
 
     private void Awake()
