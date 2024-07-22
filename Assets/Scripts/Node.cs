@@ -206,7 +206,7 @@ public class Node : SerializedMonoBehaviour
     /// </summary>
     public void ErrorDisplay()
     {
-        UnityEngine.Debug.Log("Error with space X: " + x + " Y: " + y);
+        UnityEngine.Debug.LogWarning("Error with space X: " + x + " Y: " + y);
         //Icon.color = Color.red;
     }
 

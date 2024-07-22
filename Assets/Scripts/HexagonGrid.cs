@@ -99,7 +99,7 @@ public class HexagonGrid : MonoBehaviour
                 grid[i, j].x = i;
                 grid[i, j].y = j;
 
-                Node gridNode = grid[i, j].GetComponent<Node>();
+                Node gridNode = grid[i, j];
 
                 AddVertex(gridNode);
             }
