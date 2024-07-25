@@ -14,8 +14,8 @@ public class HexagonGrid : MonoBehaviour
 
     public Node nodePrefab;
 
-    private float nodeWidth;
-    private float nodeHeight;
+    public float nodeWidth { get; private set; }
+    public float nodeHeight { get; private set; }
 
     public Node[,] grid;
     public LevelBaseObject LevelInfo;
@@ -31,8 +31,6 @@ public class HexagonGrid : MonoBehaviour
 
     public bool PathFound;
 
-    public GameObject LineOBJ;
-
     public Vector3[] compass = { Vector3.right,
         new Vector3(.5f, 0.86602540378f, 0),
         new Vector3(-.5f, 0.86602540378f, 0),
@@ -40,24 +38,30 @@ public class HexagonGrid : MonoBehaviour
         new Vector3(-.5f, -0.86602540378f, 0),
         new Vector3(.5f, -0.86602540378f, 0) };
 
+
+    private void Awake()
+    {
+        nodeWidth = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
+        nodeHeight = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y;
+        grid = LevelInfo.map;
+        width = LevelInfo.width;
+        height = LevelInfo.height;
+        Debug.Log("Node Height: " + nodeHeight);
+        Debug.Log("Node Width: " + nodeWidth);
+    }
+
     public void Start()
     {
         AdjacencyList = new List<Node>();
         SpecialNodes = new List<Node>();
         NodesWithEdges = new List<Node>();
         path = new List<Node>();
-        nodeWidth = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
-        nodeHeight = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y;
-        //nodeWidth = transform.localScale.x;
-        //nodeHeight = transform.localScale.y;
+
         PathFound = false;
 
-        Debug.Log("Node Height: " + nodeHeight);
-        Debug.Log("Node Width: " + nodeWidth);
+        
 
-        grid = LevelInfo.map;
-        width = LevelInfo.width;
-        height = LevelInfo.height;
+        
 
         PopulateGrid();       
 
@@ -550,14 +554,14 @@ public class HexagonGrid : MonoBehaviour
         return true;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        foreach (Node node in path)
-        {
-            Gizmos.DrawSphere(node.transform.position, .2f);
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.blue;
+    //    foreach (Node node in path)
+    //    {
+    //        Gizmos.DrawSphere(node.transform.position, .2f);
+    //    }
+    //}
 
 
 

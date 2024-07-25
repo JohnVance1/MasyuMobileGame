@@ -13,7 +13,7 @@ public class TouchManager : MonoBehaviour
 
     private Node currentNode;
 
-    Camera cam;
+    public Camera cam;
     private bool isDragging;
 
 
@@ -74,7 +74,6 @@ public class TouchManager : MonoBehaviour
 
     private void Awake()
     {
-        cam = Camera.main;
         playerInput = GetComponent<PlayerInput>();
         touchPressAction = playerInput.actions["TouchPress"];
         touchPositionAction = playerInput.actions["TouchPosition"];
@@ -122,7 +121,7 @@ public class TouchManager : MonoBehaviour
     private IEnumerator Drag()
     {
         isDragging = true;
-        Vector3 offset = transform.position - WorldPos;
+        //Vector3 offset = transform.position - WorldPos;
 
         while (isDragging)
         {
@@ -150,7 +149,9 @@ public class TouchManager : MonoBehaviour
 
     private Node GetSelectedNode()
     {
-        RaycastHit2D hit = Physics2D.Raycast(cam.ScreenToWorldPoint(curScreenPos), Vector2.zero);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(cam.ScreenPointToRay(curScreenPos));
+        //RaycastHit2D hit = Physics2D.Raycast(cam.ScreenToWorldPoint(curScreenPos));
+
         if(hit.transform == null)
         {
             return null;

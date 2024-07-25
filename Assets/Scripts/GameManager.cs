@@ -19,7 +19,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        cam.transform.position = new Vector3(grid.transform.position.x, grid.transform.position.y, -10);
+        SetCameraPositions();
+    }
+
+    public void SetCameraPositions()
+    {
+        float width, height;
+
+        width = (((grid.width * 2) - 1) * (grid.nodeWidth / 2)) / 2;
+        height = ((grid.height - 1) * grid.nodeHeight * .75f) / 2;
+
+        cam.transform.position = new Vector3(width, height, -10);
+
     }
 
     private void Update()

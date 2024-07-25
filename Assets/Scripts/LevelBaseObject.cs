@@ -14,6 +14,8 @@ public class LevelBaseObject : ScriptableObject
 
     public int levelID;
 
+    public bool IsComplete;
+
     public void OnEnable()
     {
         map = new Node[width, height];
