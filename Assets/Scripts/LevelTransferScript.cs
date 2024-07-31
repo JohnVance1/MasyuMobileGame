@@ -6,6 +6,8 @@ public class LevelTransferScript : MonoBehaviour
 {
     public int LevelNum;
 
+    public LevelBaseObject currentLevel;
+
     public static LevelTransferScript Instance
     {
         get; private set;
@@ -24,5 +26,7 @@ public class LevelTransferScript : MonoBehaviour
         DontDestroyOnLoad(Instance);
         
     }
+
+
 
 }

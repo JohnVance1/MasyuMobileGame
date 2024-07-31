@@ -31,6 +31,8 @@ public class HexagonGrid : MonoBehaviour
 
     public bool PathFound;
 
+    public Camera cam;
+
     public Vector3[] compass = { Vector3.right,
         new Vector3(.5f, 0.86602540378f, 0),
         new Vector3(-.5f, 0.86602540378f, 0),
@@ -41,6 +43,11 @@ public class HexagonGrid : MonoBehaviour
 
     private void Awake()
     {
+        
+    }
+
+    public void Start()
+    {
         nodeWidth = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
         nodeHeight = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y;
         grid = LevelInfo.map;
@@ -48,10 +55,7 @@ public class HexagonGrid : MonoBehaviour
         height = LevelInfo.height;
         Debug.Log("Node Height: " + nodeHeight);
         Debug.Log("Node Width: " + nodeWidth);
-    }
 
-    public void Start()
-    {
         AdjacencyList = new List<Node>();
         SpecialNodes = new List<Node>();
         NodesWithEdges = new List<Node>();
@@ -63,9 +67,20 @@ public class HexagonGrid : MonoBehaviour
 
         
 
-        PopulateGrid();       
+        PopulateGrid();
+        SetCameraPositions();
+    }
 
-    }  
+    public void SetCameraPositions()
+    {
+        float localWidth, localHeight;
+
+        localWidth = (((width * 2) - 1) * (nodeWidth / 2)) / 2;
+        localHeight = ((height - 1) * nodeHeight * .75f) / 2;
+
+        cam.transform.position = new Vector3(localWidth, localHeight, -10);
+
+    }
 
     private void Update()
     {        
@@ -77,6 +92,7 @@ public class HexagonGrid : MonoBehaviour
         if (IsCyclic())
         {
             Debug.Log("Graph contains cycle");
+            LevelInfo.IsComplete = true;
         }
         else
         {

@@ -9,6 +9,7 @@ public class UIScript : MonoBehaviour
 
     public void BackButton()
     {
+        LevelTransferScript.Instance.currentLevel = GameManager.Instance.grid.LevelInfo;
         SceneManager.LoadScene(0);
     }
 

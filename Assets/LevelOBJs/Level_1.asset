@@ -22,3 +22,4 @@ MonoBehaviour:
   wideTurnNodeLocations:
   - {x: 0, y: 2}
   levelID: 1
+  IsComplete: 0

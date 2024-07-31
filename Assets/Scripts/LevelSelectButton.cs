@@ -21,6 +21,7 @@ public class LevelSelectButton : MonoBehaviour
     public void ButtonPress()
     {
         LevelTransferScript.Instance.LevelNum = levelNumber;
+        LevelTransferScript.Instance.currentLevel = null;
         SceneManager.LoadScene("LevelScene");
 
     }
