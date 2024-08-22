@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+//using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class TouchManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject player;
-    private PlayerInput playerInput;
+    //private PlayerInput playerInput;
     private Vector3 curScreenPos;
 
     private Node currentNode;
@@ -68,51 +69,83 @@ public class TouchManager : MonoBehaviour
         }
     }
 
-    private InputAction touchPositionAction;
-    private InputAction touchPressAction;
+    //private InputAction touchPositionAction;
+    //private InputAction touchPressAction;
 
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
-        touchPressAction = playerInput.actions["TouchPress"];
-        touchPositionAction = playerInput.actions["TouchPosition"];
+        //playerInput = GetComponent<PlayerInput>();
+        //touchPressAction = playerInput.actions["TouchPress"];
+        //touchPositionAction = playerInput.actions["TouchPosition"];
     }
 
     private void OnEnable()
     {
-        touchPositionAction.performed += TouchPosition;
-        touchPressAction.performed += TouchPress;
-        touchPressAction.canceled += TouchPressCanceled;
+        //touchPositionAction.performed += TouchPosition;
+        //touchPressAction.performed += TouchPress;
+        //touchPressAction.canceled += TouchPressCanceled;
     }
 
     private void OnDisable()
     {
-        touchPositionAction.performed -= TouchPosition;
-        touchPressAction.performed -= TouchPress;
-        touchPressAction.canceled -= TouchPressCanceled;
+        //touchPositionAction.performed -= TouchPosition;
+        //touchPressAction.performed -= TouchPress;
+        //touchPressAction.canceled -= TouchPressCanceled;
 
 
     }
 
-    private void TouchPress(InputAction.CallbackContext context)
+    private void Update()
     {
-        if (isClickedOn)
+        if (Input.touchCount > 0)
         {
-            StartCoroutine(Drag());
+            Touch touch = Input.GetTouch(0);
+
+            curScreenPos = touch.position;
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                if (isClickedOn)
+                {
+                    StartCoroutine(Drag());
+                }
+            }
+
+            else if(touch.phase == TouchPhase.Canceled)
+            {
+                isDragging = false;
+
+            }
+
+            else if (touch.phase == TouchPhase.Moved)
+            {
+                curScreenPos = touch.position;
+
+            }
+
+
         }
     }
 
-    private void TouchPressCanceled(InputAction.CallbackContext context)
-    {
-        isDragging = false;
-    }
+    //private void TouchPress(InputAction.CallbackContext context)
+    //{
+    //    if (isClickedOn)
+    //    {
+    //        StartCoroutine(Drag());
+    //    }
+    //}
 
-    private void TouchPosition(InputAction.CallbackContext context)
-    {
-        curScreenPos = touchPositionAction.ReadValue<Vector2>();
+    //private void TouchPressCanceled(InputAction.CallbackContext context)
+    //{
+    //    isDragging = false;
+    //}
+
+    //private void TouchPosition(InputAction.CallbackContext context)
+    //{
+    //    curScreenPos = touchPositionAction.ReadValue<Vector2>();
         
-    }
+    //}
 
     /// <summary>
     /// Runs when the Player presses and holds down their finger or mousebutton
