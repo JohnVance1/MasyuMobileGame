@@ -32,6 +32,8 @@ public class Node : SerializedMonoBehaviour
     public int x;
     public int y;
 
+    public Vector2Int Location;
+
 
 
 
@@ -206,7 +208,7 @@ public class Node : SerializedMonoBehaviour
     /// </summary>
     public void ErrorDisplay()
     {
-        UnityEngine.Debug.LogWarning("Error with space X: " + x + " Y: " + y);
+        UnityEngine.Debug.LogWarning("Error with space X: " + Location.x + " Y: " + Location.y);
         //Icon.color = Color.red;
     }
 

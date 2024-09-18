@@ -8,6 +8,7 @@ public class LevelBaseObject : ScriptableObject
     public int width;
     public int height;
     public Node[,] map;
+    public List<Edge> Edges;
     public List<Vector2Int> straightNodeLocations;
     public List<Vector2Int> sharpTurnNodeLocations;
     public List<Vector2Int> wideTurnNodeLocations;

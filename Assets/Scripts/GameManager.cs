@@ -33,5 +33,10 @@ public class GameManager : MonoBehaviour
             grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
         }
     }
+
+    public void SavesEdges()
+    {
+        grid.LevelInfo.Edges = grid.Edges;
+    }
     
 }

@@ -6,6 +6,14 @@ using UnityEngine.Tilemaps;
 using System.IO;
 using UnityEditor.Experimental.GraphView;
 using System;
+using static TouchManager;
+
+
+public struct Edge
+{
+    public Vector2Int A;
+    public Vector2Int B;
+}
 
 public class HexagonGrid : MonoBehaviour
 {
@@ -26,6 +34,8 @@ public class HexagonGrid : MonoBehaviour
 
     private List<Node> NodesWithEdges;
 
+    public List<Edge> Edges;
+
     //private List<Node> visited; 
     private List<Node> path;
 
@@ -39,6 +49,7 @@ public class HexagonGrid : MonoBehaviour
         Vector3.left,
         new Vector3(-.5f, -0.86602540378f, 0),
         new Vector3(.5f, -0.86602540378f, 0) };
+
 
 
     private void Awake()
@@ -63,7 +74,14 @@ public class HexagonGrid : MonoBehaviour
 
         PathFound = false;
 
-        
+        if(LevelInfo.Edges != null)
+        {
+            Edges = LevelInfo.Edges;
+        }
+        else
+        {
+            Edges = new List<Edge>();
+        }
 
         
 
@@ -116,9 +134,8 @@ public class HexagonGrid : MonoBehaviour
                     ((j % 2) == 0 ? Vector3.zero : new Vector3(1, 0, 0) * nodeWidth * .5f);
 
                 grid[i, j] = Instantiate(nodePrefab, location, Quaternion.identity, transform).GetComponent<Node>();
-                grid[i, j].x = i;
-                grid[i, j].y = j;
-
+                grid[i, j].Location = new Vector2Int(i, j);
+                
                 Node gridNode = grid[i, j];
 
                 AddVertex(gridNode);
@@ -136,6 +153,14 @@ public class HexagonGrid : MonoBehaviour
             {
                 SpecialNodes.Add(node);
                 node.UpdateColor();
+            }
+        }
+
+        if(Edges.Count > 0)
+        {
+            foreach(Edge edge in Edges)
+            {
+                AddAnEdge(grid[edge.A.x, edge.A.y], grid[edge.B.x, edge.B.y]);
             }
         }
 
@@ -172,6 +197,7 @@ public class HexagonGrid : MonoBehaviour
         {
             sp.Edges.Clear();
         }
+        Edges.Clear();
         NodesWithEdges.Clear();
     }
 
@@ -339,6 +365,10 @@ public class HexagonGrid : MonoBehaviour
         // Add vertex v1 to the edges of vertex v2
         AdjacencyList.Find(v => v == v2).Edges.Add(v1);
 
+        Edge NewEdge;
+        NewEdge.A = v1.Location;
+        NewEdge.B = v2.Location;
+        Edges.Add(NewEdge);
         NodesWithEdges.Add(v1);
         NodesWithEdges.Add(v2);
         DrawLine(v1, v2);
@@ -364,6 +394,10 @@ public class HexagonGrid : MonoBehaviour
 
         NodesWithEdges.Remove(v1);
         NodesWithEdges.Remove(v2);
+        Edge NewEdge;
+        NewEdge.A = v1.Location;
+        NewEdge.B = v2.Location;
+        Edges.Remove(Edges.Find(N => N.A == NewEdge.A && N.B == NewEdge.B));
         EraseLine(v1, v2);
 
         return true;
