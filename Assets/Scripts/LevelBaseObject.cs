@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 [CreateAssetMenu]
-public class LevelBaseObject : ScriptableObject
+public class LevelBaseObject : SerializedScriptableObject
 {
     public int width;
     public int height;
@@ -17,10 +18,14 @@ public class LevelBaseObject : ScriptableObject
 
     public bool IsComplete;
 
+    private void Awake()
+    {
+        Edges = new List<Edge>();
+        map = new Node[width, height];
+    }
     public void OnEnable()
     {
-        map = new Node[width, height];
-
+        //map = new Node[width, height];
     }
 
  

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using UnityEngine.Tilemaps;
 using System.IO;
@@ -57,13 +58,16 @@ public class HexagonGrid : MonoBehaviour
         
     }
 
-    public void Start()
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         nodeWidth = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
         nodeHeight = nodePrefab.transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y;
-        grid = LevelInfo.map;
-        width = LevelInfo.width;
-        height = LevelInfo.height;
+        
         Debug.Log("Node Height: " + nodeHeight);
         Debug.Log("Node Width: " + nodeWidth);
 
@@ -74,7 +78,7 @@ public class HexagonGrid : MonoBehaviour
 
         PathFound = false;
 
-        if(LevelInfo.Edges != null)
+        if (LevelInfo.Edges != null)
         {
             Edges = LevelInfo.Edges;
         }
@@ -84,11 +88,23 @@ public class HexagonGrid : MonoBehaviour
         }
 
         
-
-        PopulateGrid();
-        SetCameraPositions();
     }
 
+
+    public void Start()
+    {
+        grid = LevelInfo.map;
+        width = LevelInfo.width;
+        height = LevelInfo.height;
+        PopulateGrid();
+        SetCameraPositions();
+
+
+
+
+    }
+
+    
     public void SetCameraPositions()
     {
         float localWidth, localHeight;
@@ -155,12 +171,12 @@ public class HexagonGrid : MonoBehaviour
                 node.UpdateColor();
             }
         }
-
+         
         if(Edges.Count > 0)
         {
             foreach(Edge edge in Edges)
             {
-                AddAnEdge(grid[edge.A.x, edge.A.y], grid[edge.B.x, edge.B.y]);
+                OnStartEdges(grid[edge.A.x, edge.A.y], grid[edge.B.x, edge.B.y]);
             }
         }
 
@@ -377,6 +393,30 @@ public class HexagonGrid : MonoBehaviour
     }
 
     /// <summary>
+    /// Adds a new edge between two given vertices in the graph
+    /// </summary>
+    /// <param name="v1">Name of the first vertex</param>
+    /// <param name="v2">Name of the second vertex</param>
+    /// <returns>Returns the success of the operation</returns>
+    public bool OnStartEdges(Node v1, Node v2)
+    {
+        // Add vertex v2 to the edges of vertex v1
+        AdjacencyList.Find(v => v == v1).Edges.Add(v2);
+
+        // Add vertex v1 to the edges of vertex v2
+        AdjacencyList.Find(v => v == v2).Edges.Add(v1);
+
+        Edge NewEdge;
+        NewEdge.A = v1.Location;
+        NewEdge.B = v2.Location;
+        NodesWithEdges.Add(v1);
+        NodesWithEdges.Add(v2);
+        DrawLine(v1, v2);
+
+        return true;
+    }
+
+    /// <summary>
     /// Removes an edge between two given vertices in the graph
     /// </summary>
     /// <param name="v1">Name of the first vertex</param>
@@ -394,13 +434,19 @@ public class HexagonGrid : MonoBehaviour
 
         NodesWithEdges.Remove(v1);
         NodesWithEdges.Remove(v2);
-        Edge NewEdge;
-        NewEdge.A = v1.Location;
-        NewEdge.B = v2.Location;
-        Edges.Remove(Edges.Find(N => N.A == NewEdge.A && N.B == NewEdge.B));
+        RemoveLevelOBJEdges(v1.Location, v2.Location);
         EraseLine(v1, v2);
 
         return true;
+    }
+
+    public void RemoveLevelOBJEdges(Vector2Int v1, Vector2Int v2)
+    {
+        Edge temp = Edges.Find(N => N.A == v1 && N.B == v2);
+        Edges.Remove(temp);
+        temp = Edges.Find(N => N.A == v2 && N.B == v1);
+        Edges.Remove(temp);
+
     }
 
     /// <summary>

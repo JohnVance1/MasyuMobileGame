@@ -10,7 +10,7 @@ public class UIScript : MonoBehaviour
     public void BackButton()
     {
         GameManager.Instance.SavesEdges();
-        //LevelTransferScript.Instance.currentLevel = GameManager.Instance.grid.LevelInfo;
+        LevelTransferScript.Instance.currentLevel = GameManager.Instance.grid.LevelInfo;
         SceneManager.LoadScene(0);
     }
 

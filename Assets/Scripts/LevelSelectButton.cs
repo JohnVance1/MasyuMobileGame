@@ -22,7 +22,7 @@ public class LevelSelectButton : MonoBehaviour
     {
         LevelTransferScript.Instance.LevelNum = levelNumber;
         LevelTransferScript.Instance.currentLevel = null;
-        SceneManager.LoadScene("LevelScene");
+        SceneManager.LoadScene("LevelScene", LoadSceneMode.Single);
 
     }
 }
