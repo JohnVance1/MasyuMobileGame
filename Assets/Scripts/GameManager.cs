@@ -25,12 +25,24 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
     }
 
-    private void OnLevelWasLoaded(int level)
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         grid = GameObject.FindObjectOfType<HexagonGrid>();
         if(grid != null)
         {
-            grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
+            if(LevelTransferScript.Instance.currentLevel != null)
+            {
+                grid.LevelInfo = LevelTransferScript.Instance.currentLevel;
+            }
+            else
+            {
+                grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
+            }
         }
     }
 
