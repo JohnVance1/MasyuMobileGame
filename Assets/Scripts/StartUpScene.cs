@@ -24,5 +24,9 @@ public class StartUpScene : MonoBehaviour
 
             
         }
+        else if(Input.GetMouseButtonDown(0))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

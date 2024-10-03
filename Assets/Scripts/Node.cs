@@ -34,6 +34,7 @@ public class Node : SerializedMonoBehaviour
 
     public Vector2Int Location;
 
+    public List<Sprite> nodeSprites;
 
 
 
@@ -51,19 +52,19 @@ public class Node : SerializedMonoBehaviour
                 break;
 
             case NodeType.Straight:
-                GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+                GetComponentInChildren<SpriteRenderer>().sprite = nodeSprites[2];
                 break;
 
             case NodeType.SharpTurn:
-                GetComponentInChildren<SpriteRenderer>().color = Color.yellow;
+                GetComponentInChildren<SpriteRenderer>().sprite = nodeSprites[1];
                 break;
 
             case NodeType.WideTurn:
-                GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                GetComponentInChildren<SpriteRenderer>().sprite = nodeSprites[0];
                 break;
 
             case NodeType.Required:
-                GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+                //GetComponentInChildren<SpriteRenderer>().color = Color.gray;
                 break;
 
             default:

@@ -63,7 +63,7 @@ public class TouchManager : MonoBehaviour
             }
             else
             {
-                isDragging = false;
+                //isDragging = false;
             }
             return null;
         }
@@ -124,6 +124,28 @@ public class TouchManager : MonoBehaviour
 
             }
 
+
+        }
+        else if(Input.GetMouseButton(0))
+        {
+
+            curScreenPos = Input.mousePosition;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (isClickedOn)
+                {
+                    StartCoroutine(Drag());
+                }
+            }
+
+            else if (Input.GetMouseButtonUp(0))
+            {
+                isDragging = false;
+
+            }
+
+            curScreenPos = Input.mousePosition;
 
         }
     }

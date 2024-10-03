@@ -44,6 +44,7 @@ public class HexagonGrid : MonoBehaviour
 
     public Camera cam;
 
+
     public Vector3[] compass = { Vector3.right,
         new Vector3(.5f, 0.86602540378f, 0),
         new Vector3(-.5f, 0.86602540378f, 0),
