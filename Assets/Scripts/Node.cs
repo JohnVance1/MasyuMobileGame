@@ -166,7 +166,8 @@ public class Node : SerializedMonoBehaviour
     /// <returns></returns>
     public bool CheckEdgesSraight(Node s1, Node s2)
     {
-        if (Vector3.Dot((s1.transform.position - transform.position).normalized, (transform.position - s2.transform.position).normalized) == 1)
+        float dot = Vector3.Dot((s1.transform.position - transform.position).normalized, (transform.position - s2.transform.position).normalized);
+        if (Mathf.Approximately(dot, 1.0f))
         {
             return true;
         }

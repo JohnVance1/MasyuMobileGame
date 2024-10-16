@@ -35,14 +35,15 @@ public class GameManager : MonoBehaviour
         grid = GameObject.FindObjectOfType<HexagonGrid>();
         if(grid != null)
         {
-            if(LevelTransferScript.Instance.currentLevel != null)
-            {
-                grid.LevelInfo = LevelTransferScript.Instance.currentLevel;
-            }
-            else
-            {
-                grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
-            }
+            //if(LevelTransferScript.Instance.currentLevel != null)
+            //{
+            //    grid.LevelInfo = LevelTransferScript.Instance.currentLevel;
+            //}
+            //else
+            //{
+            //    grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
+            //}
+            grid.LevelInfo = levels[LevelTransferScript.Instance.LevelNum - 1];
         }
     }
 

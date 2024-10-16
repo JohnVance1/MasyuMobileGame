@@ -12,13 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ddf00cf2d2001e4d800798b606e3bfc, type: 3}
   m_Name: Level_8
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 0
+    SerializedBytes: 0101030000006d00610070002f0000000001180000004e006f00640065005b002c005d002c00200041007300730065006d0062006c0079002d0043005300680061007200700000000000062400000000000000270105000000720061006e006b007300010300000036007c0036002e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0705010105000000450064006700650073002f010000000144000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e004c00690073007400600031005b005b0045006400670065002c00200041007300730065006d0062006c0079002d004300530068006100720070005d005d002c0020006d00730063006f0072006c0069006200010000000600000000000000000705
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   width: 6
   height: 6
   straightNodeLocations:
-  - {x: 1, y: 4}
+  - {x: 2, y: 3}
+  - {x: 4, y: 1}
   sharpTurnNodeLocations:
-  - {x: 2, y: 2}
-  - {x: 3, y: 5}
-  wideTurnNodeLocations:
+  - {x: 3, y: 0}
   - {x: 0, y: 2}
+  - {x: 1, y: 4}
+  wideTurnNodeLocations:
+  - {x: 1, y: 3}
+  - {x: 1, y: 0}
   levelID: 8
+  IsComplete: 0

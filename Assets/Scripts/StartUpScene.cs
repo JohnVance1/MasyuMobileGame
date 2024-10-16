@@ -19,14 +19,14 @@ public class StartUpScene : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began)
             {
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene("LevelSelectScene");
             }
 
             
         }
         else if(Input.GetMouseButtonDown(0))
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("LevelSelectScene");
         }
     }
 }

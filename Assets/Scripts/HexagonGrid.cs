@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEngine.RuleTile.TilingRuleOutput;
-using UnityEngine.Tilemaps;
 using System.IO;
-using UnityEditor.Experimental.GraphView;
 using System;
 using static TouchManager;
 
@@ -519,8 +516,6 @@ public class HexagonGrid : MonoBehaviour
         // and not part of recursion stack
         int count = NodesWithEdges.Count;
 
-
-
         for (int i = 0; i < count; i++)
         {
             NodesWithEdges[i].Visited = false;
@@ -536,6 +531,7 @@ public class HexagonGrid : MonoBehaviour
                 {
                     if (DoesLoopContainSpecialNodes() && AreNodesSatisfied())
                     {
+                        PathFound = true;
                         return true;
                     }                    
 
